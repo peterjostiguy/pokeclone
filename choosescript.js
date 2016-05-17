@@ -1,9 +1,6 @@
-
-
 $(document).ready(function(){
-
-  var userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
-  userPokemon = parseFloat(userPokemon);
+  var userPokemon = ""
+  var chosenURL = ""
   var userPokemonType = "";
   var userTypeURL = "";
   var userWeaknesses = [];
@@ -19,8 +16,7 @@ $(document).ready(function(){
   var currentLat;
   var currentLon;
   var distanceTraveled = 0;
-  // reset distanceTraveled after battle. set startingLat and StartingLong to currentLat/Lon after it hits 1 in the distance measurement list.
-
+  var battleCounter = 1
   var images = {
     normal: "https://upload.wikimedia.org/wikipedia/commons/1/16/Appearance_of_sky_for_weather_forecast,_Dhaka,_Bangladesh.JPG",
     fighting: "https://img0.etsystatic.com/003/0/5307718/il_fullxfull.360453384_aciz.jpg" ,
@@ -41,11 +37,9 @@ $(document).ready(function(){
     dark: "https://wallpaperscraft.com/image/dark_lines_background_black_65869_2560x1440.jpg",
     fairy: "http://img09.deviantart.net/c851/i/2016/069/b/8/navi_by_maintenancefairy-d9um379.png",
   };
-
   function getRival(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
-
   function setLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position){
@@ -56,147 +50,135 @@ $(document).ready(function(){
       })
     }
   }
-
-setLocation();
-
-
   function newLocation() {
-      if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
-      } else {
-          console.log("Geolocation is not supported by this browser.");}
-      }
-
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
+    } else {
+        console.log("Geolocation is not supported by this browser.");}
+    }
   function showPosition(position) {
-      currentLat = position.coords.latitude;
-      currentLon = position.coords.longitude;
-      console.log("You moved!");
-      distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2))
-      console.log("distance traveled = " + distanceTraveled);
-  }
-
-newLocation()
-
-  do {
-    if (userPokemon > 0 && userPokemon < 722){
-      var pokemonChosen = confirm("You chose " + userPokemon +". Is that correct?");
-      if (pokemonChosen === false){
-        userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
-      }
-    }
-    else {
-      userPokemon = prompt("Oops! Make sure you're entering a pokemon by it's number (1-721)");
-      pokemonChosen = false;
-    }
-  } while(pokemonChosen === false);
-  var chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
-  $.get(chosenURL, function(userData){
-    userPokemon = userData.name.toUpperCase();
-    userPokemonType = userData.types[userData.types.length-1].type.name;
-    userTypeURL = userData.types[userData.types.length-1].type.url
-    $(".displayPokemon").append("<h1>"+userPokemon+"</h1>");
-    $(".displayPokemon").append("<h2>"+userPokemonType.toUpperCase()+"</h2>");
-    for (type in images){
-      if (type === userPokemonType){
-        var userTypeImage = "url(" + images[type]+ ")";
-      }
-    }
-    $(".displayPokemon").css("background-image", userTypeImage)
-    $(".displayPokemon").css("border-right", "1vw solid black")
-    //add button to change? reload page?
-  }).done(function(){
-    $.get(userTypeURL, function(damageRelations){
-      $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
-      $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
-      for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
-        userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
-        $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>")
-      }
-      for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
-        userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
-        $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>")
-      }
-      $(".gameplay").append("<button class='newMatch center-block'>Click Here to Play!</button>");
-      $(".newMatch").on("click", function(){
-        battleOdds = 1;
-        $(".rivalPokemon").empty();
-        rivalPokemon = getRival(1, 721);
-        var rivalPokemonURL = "http://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/"
-        $.get(rivalPokemonURL, function(rivalData){
-          rivalPokemon = rivalData.name.toUpperCase();
-          rivalPokemonType = rivalData.types[rivalData.types.length-1].type.name;
-          rivalTypeURL = rivalData.types[rivalData.types.length-1].type.url
-          $(".rivalPokemon").append("<h1>"+rivalPokemon+"</h1>");
-          $(".rivalPokemon").append("<h2>"+rivalPokemonType.toUpperCase()+"</h2>");
-        }).done(function(){
-          for (type in images){
-            if (type === rivalPokemonType){
-              var rivalTypeImage = "url(" + images[type]+ ")";
-            }
+    currentLat = position.coords.latitude;
+    currentLon = position.coords.longitude;
+    console.log("You moved!");
+    console.log(currentLat);
+    console.log(battleCounter);
+    distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2))
+    console.log("distance traveled = " + distanceTraveled);
+    if (distanceTraveled > (0.00073 * battleCounter)) {
+      battleCounter ++
+      console.log("New Battle");
+      battleOdds = 1;
+      $(".rivalPokemon").empty();
+      rivalPokemon = getRival(1, 721);
+      var rivalPokemonURL = "http://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/"
+      $.get(rivalPokemonURL, function(rivalData){
+        rivalPokemon = rivalData.name.toUpperCase();
+        rivalPokemonType = rivalData.types[rivalData.types.length-1].type.name;
+        rivalTypeURL = rivalData.types[rivalData.types.length-1].type.url
+        $(".rivalPokemon").append("<h1>"+rivalPokemon+"</h1>");
+        $(".rivalPokemon").append("<h2>"+rivalPokemonType.toUpperCase()+"</h2>");
+      }).done(function(){
+        for (type in images){
+          if (type === rivalPokemonType){
+            var rivalTypeImage = "url(" + images[type]+ ")";
           }
-          $(".rivalPokemon").css("background-image", rivalTypeImage);
-        }).done(function(){
-          for(i=0;i<userWeaknesses.length;i++){
-            if(userWeaknesses[i] === rivalPokemonType){
-              alert("Uh Oh! This isn't lookin' good... Click to see how the battle turns out!")
-              battleOdds = 2
-            }
+        }
+        $(".rivalPokemon").css("background-image", rivalTypeImage);
+      }).done(function(){
+        for(i=0;i<userWeaknesses.length;i++){
+          if(userWeaknesses[i] === rivalPokemonType){
+            alert("Uh Oh! This isn't lookin' good... Click to see how the battle turns out!")
+            battleOdds = 2
           }
-          for(i=0;i<userStrengths.length;i++){
-            if(userStrengths[i] === rivalPokemonType){
-              alert("Lookin Good! Click to see how the battle turns out!")
-              battleOdds = 3
-            }
+        }
+        for(i=0;i<userStrengths.length;i++){
+          if(userStrengths[i] === rivalPokemonType){
+            alert("Lookin Good! Click to see how the battle turns out!")
+            battleOdds = 3
           }
-        }).done(function(){
-          var outcome = Math.random();
-          console.log(battleOdds);
-          console.log(outcome);
-          if(battleOdds === 1){
-            alert("Fair Match! Let's see how you do!")
-            if(outcome > .5){
-              alert("You win!");
-              winTotal ++;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
-            else{
-              alert("What an idiot. Start Over");
-              winTotal = 0;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
-          }
-          else if(battleOdds === 2){
-            if(outcome > .8){
-              alert("You win!");
-              winTotal ++;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
-            else{
-              alert("What an idiot. Start Over");
-              winTotal = 0;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
+        }
+      }).done(function(){
+        var outcome = Math.random();
+        console.log(battleOdds);
+        console.log(outcome);
+        if(battleOdds === 1){
+          alert("Fair Match! Let's see how you do!")
+          if(outcome > .5){
+            alert("You win!");
+            winTotal ++;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
           }
           else{
-            if(outcome > .2){
-              alert("You win!");
-              winTotal ++;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
-            else{
-              alert("What an idiot. Start Over");
-              winTotal = 0;
-              $(".winTotal").empty();
-              $(".winTotal").append(winTotal);
-            }
+            alert("What an idiot. Start Over");
+            winTotal = 0;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
           }
-        })
+        }
+        else if(battleOdds === 2){
+          if(outcome > .8){
+            alert("You win!");
+            winTotal ++;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
+          }
+          else{
+            alert("What an idiot. Start Over");
+            winTotal = 0;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
+          }
+        }
+        else{
+          if(outcome > .2){
+            alert("You win!");
+            winTotal ++;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
+          }
+          else{
+            alert("What an idiot. Start Over");
+            winTotal = 0;
+            $(".winTotal").empty();
+            $(".winTotal").append(winTotal);
+          }
+        }
       })
-    })
+    }
+  }
+  $("#selection").on("submit", function(event){
+    event.preventDefault();
+    userPokemon = $("#textSelection").val();
+    userPokemon = parseFloat(userPokemon);
+    chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
+    $.get(chosenURL, function(userData){
+      console.log(chosenURL);
+      userPokemon = userData.name.toUpperCase();
+      userPokemonType = userData.types[userData.types.length-1].type.name;
+      userTypeURL = userData.types[userData.types.length-1].type.url
+      $(".displayPokemon").append("<h1>"+userPokemon+"</h1>");
+      $(".displayPokemon").append("<h2>"+userPokemonType.toUpperCase()+"</h2>");
+      for (type in images){
+        if (type === userPokemonType){
+          var userTypeImage = "url(" + images[type]+ ")";
+        }
+      }
+      $(".displayPokemon").css("background-image", userTypeImage)
+      $(".displayPokemon").css("border-right", "1vw solid black")
+    }).done(function(){
+      $.get(userTypeURL, function(damageRelations){
+        $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
+        $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
+        for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
+          userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
+          $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>")
+        }
+        for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
+          userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
+          $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>")
+        }
+      })
+    }).done(setLocation()).done(newLocation())
   })
 })

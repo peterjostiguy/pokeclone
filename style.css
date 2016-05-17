@@ -32,3 +32,10 @@ h1 {
 h2 {
   font-size: 4vh;
 }
+
+form {
+  font-variant: small-caps;
+  font-size: 3vh;
+  color: black;
+  text-shadow: none;
+}

@@ -26,10 +26,11 @@
 //   console.log("this should work!")
 // })
 
-$(document).ready(function(){
 
-  var userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
-  userPokemon = parseFloat(userPokemon);
+
+$(document).ready(function(){
+  var userPokemon = ""
+  var chosenURL = ""
   var userPokemonType = "";
   var userTypeURL = "";
   var userWeaknesses = [];
@@ -46,8 +47,6 @@ $(document).ready(function(){
   var currentLon;
   var distanceTraveled = 0;
   var battleCounter = 1
-  // reset distanceTraveled after battle. set startingLat and StartingLong to currentLat/Lon after it hits 1 in the distance measurement list.
-
   var images = {
     normal: "https://upload.wikimedia.org/wikipedia/commons/1/16/Appearance_of_sky_for_weather_forecast,_Dhaka,_Bangladesh.JPG",
     fighting: "https://img0.etsystatic.com/003/0/5307718/il_fullxfull.360453384_aciz.jpg" ,
@@ -68,11 +67,9 @@ $(document).ready(function(){
     dark: "https://wallpaperscraft.com/image/dark_lines_background_black_65869_2560x1440.jpg",
     fairy: "http://img09.deviantart.net/c851/i/2016/069/b/8/navi_by_maintenancefairy-d9um379.png",
   };
-
   function getRival(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
-
   function setLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position){
@@ -83,21 +80,17 @@ $(document).ready(function(){
       })
     }
   }
-
-setLocation();
-
-
   function newLocation() {
-      if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
-      } else {
-          console.log("Geolocation is not supported by this browser.");}
-      }
-
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
+    } else {
+        console.log("Geolocation is not supported by this browser.");}
+    }
   function showPosition(position) {
     currentLat = position.coords.latitude;
     currentLon = position.coords.longitude;
     console.log("You moved!");
+    console.log(currentLat);
     console.log(battleCounter);
     distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2))
     console.log("distance traveled = " + distanceTraveled);
@@ -184,46 +177,38 @@ setLocation();
       })
     }
   }
-
-  do {
-    if (userPokemon > 0 && userPokemon < 722){
-      var pokemonChosen = confirm("You chose " + userPokemon +". Is that correct?");
-      if (pokemonChosen === false){
-        userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
+  $("#selection").on("submit", function(event){
+    event.preventDefault();
+    userPokemon = $("#textSelection").val();
+    userPokemon = parseFloat(userPokemon);
+    chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
+    $.get(chosenURL, function(userData){
+      console.log(chosenURL);
+      userPokemon = userData.name.toUpperCase();
+      userPokemonType = userData.types[userData.types.length-1].type.name;
+      userTypeURL = userData.types[userData.types.length-1].type.url
+      $(".displayPokemon").append("<h1>"+userPokemon+"</h1>");
+      $(".displayPokemon").append("<h2>"+userPokemonType.toUpperCase()+"</h2>");
+      for (type in images){
+        if (type === userPokemonType){
+          var userTypeImage = "url(" + images[type]+ ")";
+        }
       }
-    }
-    else {
-      userPokemon = prompt("Oops! Make sure you're entering a pokemon by it's number (1-721)");
-      pokemonChosen = false;
-    }
-  } while(pokemonChosen === false);
-  var chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
-  $.get(chosenURL, function(userData){
-    userPokemon = userData.name.toUpperCase();
-    userPokemonType = userData.types[userData.types.length-1].type.name;
-    userTypeURL = userData.types[userData.types.length-1].type.url
-    $(".displayPokemon").append("<h1>"+userPokemon+"</h1>");
-    $(".displayPokemon").append("<h2>"+userPokemonType.toUpperCase()+"</h2>");
-    for (type in images){
-      if (type === userPokemonType){
-        var userTypeImage = "url(" + images[type]+ ")";
-      }
-    }
-    $(".displayPokemon").css("background-image", userTypeImage)
-    $(".displayPokemon").css("border-right", "1vw solid black")
-    //add button to change? reload page?
-  }).done(function(){
-    $.get(userTypeURL, function(damageRelations){
-      $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
-      $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
-      for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
-        userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
-        $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>")
-      }
-      for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
-        userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
-        $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>")
-      }
-    })
-  }).done(newLocation())
+      $(".displayPokemon").css("background-image", userTypeImage)
+      $(".displayPokemon").css("border-right", "1vw solid black")
+    }).done(function(){
+      $.get(userTypeURL, function(damageRelations){
+        $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
+        $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
+        for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
+          userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
+          $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>")
+        }
+        for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
+          userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
+          $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>")
+        }
+      })
+    }).done(setLocation()).done(newLocation())
+  })
 })
