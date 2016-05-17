@@ -5,18 +5,19 @@
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 .displayPokemon {
-  height: 84vh;
+  height: 90vh;
   background-size: cover;
 }
 
 .rivalPokemon{
-  height: 84vh;
+  height: 90vh;
   background-size: cover;
+
 }
 
 .counter {
   color: blue;
-  font-size: 6vh;
+  font-size: 8vh;
 }
 
 .strengths, .weaknesses {
