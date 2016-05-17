@@ -179,6 +179,7 @@ $(document).ready(function(){
   }
   $("#selection").on("submit", function(event){
     event.preventDefault();
+    $(".displayPokemon").empty();
     userPokemon = $("#textSelection").val();
     userPokemon = parseFloat(userPokemon);
     chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
@@ -196,7 +197,6 @@ $(document).ready(function(){
       }
       $(".displayPokemon").css("background-image", userTypeImage)
       $(".displayPokemon").css("border-right", "1vw solid black")
-    }).done(function(){
       $.get(userTypeURL, function(damageRelations){
         $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
         $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
