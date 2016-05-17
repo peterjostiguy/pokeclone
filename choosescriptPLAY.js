@@ -75,8 +75,6 @@ $(document).ready(function(){
       navigator.geolocation.getCurrentPosition(function(position){
         startingLat = position.coords.latitude;
         startingLon = position.coords.longitude;
-        console.log(startingLat);
-        console.log(startingLon);
       })
     }
   }
@@ -84,110 +82,95 @@ $(document).ready(function(){
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(showPosition);
     } else {
-        console.log("Geolocation is not supported by this browser.");}
+        alert("Geolocation is not supported by this browser.");}
     }
   function showPosition(position) {
     currentLat = position.coords.latitude;
     currentLon = position.coords.longitude;
-    console.log("You moved!");
-    console.log(currentLat);
-    console.log(battleCounter);
     distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2))
-    console.log("distance traveled = " + distanceTraveled);
     if (distanceTraveled > (0.00073 * battleCounter)) {
-      battleCounter ++
-      console.log("New Battle");
+      battleCounter ++;
       battleOdds = 1;
       $(".rivalPokemon").empty();
       rivalPokemon = getRival(1, 721);
-      var rivalPokemonURL = "http://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/"
+      var rivalPokemonURL = "http://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/";
       $.get(rivalPokemonURL, function(rivalData){
         rivalPokemon = rivalData.name.toUpperCase();
         rivalPokemonType = rivalData.types[rivalData.types.length-1].type.name;
-        rivalTypeURL = rivalData.types[rivalData.types.length-1].type.url
+        rivalTypeURL = rivalData.types[rivalData.types.length-1].type.url;
         $(".rivalPokemon").append("<h1>"+rivalPokemon+"</h1>");
         $(".rivalPokemon").append("<h2>"+rivalPokemonType.toUpperCase()+"</h2>");
       }).done(function(){
         for (type in images){
           if (type === rivalPokemonType){
             var rivalTypeImage = "url(" + images[type]+ ")";
-          }
+          };
         }
         $(".rivalPokemon").css("background-image", rivalTypeImage);
       }).done(function(){
         for(i=0;i<userWeaknesses.length;i++){
           if(userWeaknesses[i] === rivalPokemonType){
-            alert("Uh Oh! This isn't lookin' good... Click to see how the battle turns out!")
-            battleOdds = 2
+            alert("Uh Oh! This isn't lookin' good... Click to see how the battle turns out!");
+            battleOdds = 2;
           }
         }
         for(i=0;i<userStrengths.length;i++){
           if(userStrengths[i] === rivalPokemonType){
-            alert("Lookin Good! Click to see how the battle turns out!")
-            battleOdds = 3
+            alert("Lookin Good! Click to see how the battle turns out!");
+            battleOdds = 3;
           }
         }
       }).done(function(){
         var outcome = Math.random();
-        console.log(battleOdds);
-        console.log(outcome);
         if(battleOdds === 1){
-          alert("Fair Match! Let's see how you do!")
+          alert("Fair Match! Let's see how you do!");
           if(outcome > .5){
             alert("You win!");
             winTotal ++;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
           else{
             alert("What an idiot. Start Over");
             winTotal = 0;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
         }
         else if(battleOdds === 2){
           if(outcome > .8){
             alert("You win!");
             winTotal ++;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
           else{
             alert("What an idiot. Start Over");
             winTotal = 0;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
         }
         else{
           if(outcome > .2){
             alert("You win!");
             winTotal ++;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
           else{
             alert("What an idiot. Start Over");
             winTotal = 0;
-            $(".winTotal").empty();
-            $(".winTotal").append(winTotal);
           }
         }
+        $(".winTotal").empty();
+        $(".winTotal").append("WINS: " + winTotal);
       })
     }
   }
   $("#selection").on("submit", function(event){
     event.preventDefault();
     $(".displayPokemon").empty();
+    $("#start").empty();
+    $("#start").append("<button>Start!</button>");
+    $("#submission").replaceWith('<input type="submit" value="Change Pokemon" id="submission">');
     userPokemon = $("#textSelection").val();
     userPokemon = parseFloat(userPokemon);
     chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
     $.get(chosenURL, function(userData){
-      console.log(chosenURL);
       userPokemon = userData.name.toUpperCase();
       userPokemonType = userData.types[userData.types.length-1].type.name;
-      userTypeURL = userData.types[userData.types.length-1].type.url
+      userTypeURL = userData.types[userData.types.length-1].type.url;
       $(".displayPokemon").append("<h1>"+userPokemon+"</h1>");
       $(".displayPokemon").append("<h2>"+userPokemonType.toUpperCase()+"</h2>");
       for (type in images){
@@ -200,15 +183,30 @@ $(document).ready(function(){
       $.get(userTypeURL, function(damageRelations){
         $(".displayPokemon").append("<p class='strengths'>STRENGTHS</p>");
         $(".displayPokemon").append("<p class='weaknesses'>WEAKNESSES</p>");
-        for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
-          userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
-          $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>")
+        if (damageRelations.damage_relations.double_damage_to.length === 0){
+          $(".strengths").append("<p>None</p>");
         }
-        for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
-          userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
-          $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>")
+        else{
+          for (i=0;i<damageRelations.damage_relations.double_damage_to.length;i++){
+            userStrengths.push(damageRelations.damage_relations.double_damage_to[i].name);
+            $(".strengths").append("<p>"+damageRelations.damage_relations.double_damage_to[i].name+"</p>");
+          }
+        }
+        if(damageRelations.damage_relations.double_damage_from.length === 0){
+          $(".weaknesses").append("<p>None</p>");
+        }
+        else{
+          for (i=0;i<damageRelations.damage_relations.double_damage_from.length;i++){
+            userWeaknesses.push(damageRelations.damage_relations.double_damage_from[i].name);
+            $(".weaknesses").append("<p>"+damageRelations.damage_relations.double_damage_from[i].name+"</p>");
+          }
         }
       })
-    }).done(setLocation()).done(newLocation())
+    })
+  })
+  $("#start").on("click", function(event){
+    $(".landingPage").empty();
+    setLocation();
+    newLocation();
   })
 })

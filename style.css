@@ -39,4 +39,10 @@ form {
   font-size: 3vh;
   color: black;
   text-shadow: none;
+  float: left;
+  margin-right: 10vw;
+}
+
+#start {
+  color: black
 }
