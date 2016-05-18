@@ -9,22 +9,40 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div class="row">
+      <div class="row pregame">
         <div class="landingPage col-xs-12">
-          <form class="choosePokemon" action="" method="post" id="selection">
-            <input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">
-            <input type="submit" value="I Choose You!" id="submission">
-          </form>
-          <div id="start">
+          <div class = "row">
+            <div class="intro col-md-6 col-xs-8">
+              <h1>
+                Welcome to PokeClone!
+              </h1>
+              <h2>
+              Bringing your favorite creatures to your own neighborhood!
+              </h2>
+            </div>
           </div>
+          <div class = "row">
+            <div class="guide col-md-6 col-xs-8">
+              <h3>HOW TO PLAY</h3>
+              <p>
+                Your goal is to get to your destination with your pokemon without being defeated in battle. Enter your destination here, choose your pokemon, and then your ready to go! Head to your destination and good luck!
+              </p>
+            </div>
+          </div>
+          <div class="col-xs-12">
+            <form class="destinationEntry" action="" method="post">
+              <textarea class="address" rows="3" placeholder="Enter Address Here"></textarea>
+            </form>
+          </div>
+          <button type="button" name="button" id="selectDestination">Select!</button>
         </div>
+      </div>
+      <div class="row">
         <div class="displayPokemon col-xs-6">
         </div>
         <div class="rivalPokemon col-xs-6">
         </div>
       </div>
-    </div>
-    <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 counter">
           <h1 class="winTotal text-center"></h1>

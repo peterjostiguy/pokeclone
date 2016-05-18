@@ -29,8 +29,15 @@
 
 
 $(document).ready(function(){
-  var userPokemon = ""
-  var chosenURL = ""
+  if(window.innerHeight > window.innerWidth){
+    alert("PokeClone is best enjoyed in Landscape!");
+}
+  var desitnationAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+  var destinationLat = 0;
+  var destinationLon = 0;
+  var distanceToDestination = 0;
+  var userPokemon = "";
+  var chosenURL = "";
   var userPokemonType = "";
   var userTypeURL = "";
   var userWeaknesses = [];
@@ -39,14 +46,14 @@ $(document).ready(function(){
   var rivalPokemonType = "";
   var rivalWeaknesses = [];
   var rivalStrengths = [];
-  var battleOdds = 1
-  var winTotal = 0
+  var battleOdds = 1;
+  var winTotal = 0;
   var startingLat;
   var startingLon;
   var currentLat;
   var currentLon;
   var distanceTraveled = 0;
-  var battleCounter = 1
+  var battleCounter = 1;
   var images = {
     normal: "https://upload.wikimedia.org/wikipedia/commons/1/16/Appearance_of_sky_for_weather_forecast,_Dhaka,_Bangladesh.JPG",
     fighting: "https://img0.etsystatic.com/003/0/5307718/il_fullxfull.360453384_aciz.jpg" ,
@@ -87,13 +94,18 @@ $(document).ready(function(){
   function showPosition(position) {
     currentLat = position.coords.latitude;
     currentLon = position.coords.longitude;
-    distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2))
-    if (distanceTraveled > (0.00073 * battleCounter)) {
+    $(".rivalPokemon").css("background-image", "url('loading.gif')");
+    distanceToDestination = Math.sqrt(Math.pow(currentLat-destinationLat, 2)+Math.pow(currentLon-destinationLon, 2));
+    console.log(destinationLat);
+    console.log(destinationLon);
+    console.log(distanceToDestination);
+    distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2));
+    if (distanceTraveled > (0.00073 * battleCounter) && distanceToDestination > 0.0002) {
       battleCounter ++;
       battleOdds = 1;
       $(".rivalPokemon").empty();
       rivalPokemon = getRival(1, 721);
-      var rivalPokemonURL = "http://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/";
+      var rivalPokemonURL = "https://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/";
       $.get(rivalPokemonURL, function(rivalData){
         rivalPokemon = rivalData.name.toUpperCase();
         rivalPokemonType = rivalData.types[rivalData.types.length-1].type.name;
@@ -155,18 +167,41 @@ $(document).ready(function(){
         }
         $(".winTotal").empty();
         $(".winTotal").append("WINS: " + winTotal);
+        // once you figure the order shit out(it shows, but needs to let the rival type show first), this will be a good placeholder.
+        // $(".rivalPokemon").css("background-image", "url('loading.gif')");
       })
     }
+    else if (distanceToDestination <= 0.0005) {
+      alert("You made it! PokeMaster!")
+    }
   }
+  $("#selectDestination").on("click", function(event){
+    desitnationAddress = desitnationAddress + $('.address').val() + "&key=AIzaSyAXu3WBe8npGIQd2KleoYLNp-hmwWqgzBQ";
+    desitnationAddress = desitnationAddress.replace(/ /g,"+");
+    $.get(desitnationAddress, function(addressData){
+      destinationLat = addressData.results[0].geometry.location.lat;
+      destinationLon = addressData.results[0].geometry.location.lng;
+    })
+    $(".pregame").empty();
+    $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
+      '<input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">'+
+      '<input type="submit" value="I Choose You!" id="submission"></form>');
+
   $("#selection").on("submit", function(event){
     event.preventDefault();
+    $(".landingPage").css("background-image", "none");
+    $(".landingPage").css("height", "auto");
+    $(".displayPokemon").css("height", "90vh")
+    $(".rivalPokemon").css("height", "90vh")
+    $(".counter").css("height", "auto")
     $(".displayPokemon").empty();
+    $(".pregame").append('<div id="start">'+'</div>')
     $("#start").empty();
     $("#start").append("<button>Start!</button>");
     $("#submission").replaceWith('<input type="submit" value="Change Pokemon" id="submission">');
     userPokemon = $("#textSelection").val();
     userPokemon = parseFloat(userPokemon);
-    chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
+    chosenURL = "https://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
     $.get(chosenURL, function(userData){
       userPokemon = userData.name.toUpperCase();
       userPokemonType = userData.types[userData.types.length-1].type.name;
@@ -203,10 +238,12 @@ $(document).ready(function(){
         }
       })
     })
+    $("#start").on("click", function(event){
+      $(".pregame").empty();
+      $(".rivalPokemon").css("background-image", "url('loading.gif')");
+      setLocation();
+      newLocation();
   })
-  $("#start").on("click", function(event){
-    $(".landingPage").empty();
-    setLocation();
-    newLocation();
+  })
   })
 })
