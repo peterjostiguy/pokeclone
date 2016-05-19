@@ -36,7 +36,7 @@ form {
   color: black;
   text-shadow: none;
   float: left;
-  margin-right: 10vw;
+  margin-right: 8vw;
 }
 
 #start, #final {
@@ -49,23 +49,26 @@ form {
   text-shadow: none;
 }
 
-.landingPage {
+.container-fluid {
   background-image: url('grouppokemon.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   height: 100vh;
 }
 
-.intro, .guide, .form {
+.intro, .guide, .form, .destinationButton, .blink_me, #final {
   background-color: hsla(360, 0%, 0%, 0.4);
 }
 
+.destinationButton {
+  padding-top:2vh;
+}
+
 .guide {
-  padding-bottom: 5vh;
+  padding-bottom: 4vh;
 }
 
 .address {
-  width: 45vw;
   color: black;
   text-shadow: none;
 }

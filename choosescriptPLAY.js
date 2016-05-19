@@ -83,9 +83,9 @@ $(document).ready(function(){
   function blinker() {
     $('.blink_me').fadeOut(200);
     $('.blink_me').fadeIn(200);
-}
+  }
+  setInterval(blinker, 400);
 
-setInterval(blinker, 400);
   function setLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position){
@@ -201,31 +201,33 @@ setInterval(blinker, 400);
       if(lossTotal === 0){
         $(".score").empty();
         $(".score").append("<h1 id='final'>UNDEFEATED! PokeMASTER!</h1>");
-        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").append("<h2 class='counter blink_me final'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
         $(".score").css("background-image", "url('master.jpg')");
         $(".score").css("height", "100vh");
       }
       else if (lossTotal < winTotal) {
         $(".score").empty();
         $(".score").append("<h1 id='final'>You made it! Not bad!</h1>");
-        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").append("<h2 class='counter blink_me final'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
         $(".score").css("background-image", "url('trainon.jpg')");
         $(".score").css("height", "100vh");
       }
       else if (lossTotal === winTotal) {
         $(".score").empty();
         $(".score").append("<h1 id='final'>Not your best. Try again!</h1>");
-        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").append("<h2 class='counter blink_me final'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
         $(".score").css("background-image", "url('trainon.jpg')");
         $(".score").css("background-size", "contain");
         $(".score").css("background-repeat", "no-repeat");
         $(".score").css("background-position", "center");
         $(".score").css("height", "100vh");
+        $("#final").css("margin-bottom", "55vh")
+        console.log("this should work");
       }
       else {
         $(".score").empty();
         $(".score").append("<h1 id='final'>Ehh. Professor Oak wants a word...</h1>");
-        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").append("<h2 class='counter blink_me final'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
         $(".score").css("background-image", "url('oak.jpg')");
         $(".score").css("background-size", "contain");
         $(".score").css("background-repeat", "no-repeat");
@@ -247,6 +249,7 @@ setInterval(blinker, 400);
       // if (addressConfirmed === true){
         // console.log("confirming!");
       $(".pregame").empty();
+      $(".container-fluid").css("background-image", "none");
       $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
         '<input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">'+
         '<input type="submit" value="I Choose You!" id="submission"></form>');
