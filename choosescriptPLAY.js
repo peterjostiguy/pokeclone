@@ -101,6 +101,7 @@ $(document).ready(function(){
     console.log(distanceToDestination);
     distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2));
     if (distanceTraveled > (0.00073 * battleCounter) && distanceToDestination > 0.0002) {
+      navigator.vibrate(1000);
       battleCounter ++;
       battleOdds = 1;
       $(".rivalPokemon").empty();
@@ -193,6 +194,7 @@ $(document).ready(function(){
       })
     }
     else if (distanceToDestination <= 0.0005) {
+      navigator.vibrate(3000);
       $(".gameplay").empty();
       if(lossTotal === 0){
         $(".score").empty();
