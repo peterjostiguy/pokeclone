@@ -55,6 +55,8 @@ $(document).ready(function(){
   var currentLon;
   var distanceTraveled = 0;
   var battleCounter = 1;
+  var rivalFrequency = 0;
+  var addressConfirmed = false;
   var images = {
     normal: "https://upload.wikimedia.org/wikipedia/commons/1/16/Appearance_of_sky_for_weather_forecast,_Dhaka,_Bangladesh.JPG",
     fighting: "https://img0.etsystatic.com/003/0/5307718/il_fullxfull.360453384_aciz.jpg" ,
@@ -78,6 +80,12 @@ $(document).ready(function(){
   function getRival(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
+  function blinker() {
+    $('.blink_me').fadeOut(200);
+    $('.blink_me').fadeIn(200);
+}
+
+setInterval(blinker, 400);
   function setLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position){
@@ -100,7 +108,7 @@ $(document).ready(function(){
     console.log(destinationLon);
     console.log(distanceToDestination);
     distanceTraveled = Math.sqrt(Math.pow(currentLat-startingLat, 2)+Math.pow(currentLon-startingLon, 2));
-    if (distanceTraveled > (0.00073 * battleCounter) && distanceToDestination > 0.0002) {
+    if (distanceTraveled > (rivalFrequency * battleCounter) && distanceToDestination > 0.0002) {
       navigator.vibrate(1000);
       battleCounter ++;
       battleOdds = 1;
@@ -136,55 +144,49 @@ $(document).ready(function(){
         var outcome = Math.random();
         if(battleOdds === 1){
           if(outcome > .5){
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             winTotal ++;
           }
           else{
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("Bah! You lost! Nice effort!").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             lossTotal ++;
           }
         }
         else if(battleOdds === 2){
           if(outcome > .8){
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Uh oh! This isn't looking good...").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Uh oh! This isn't looking good...").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             winTotal ++;
           }
           else{
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Uh oh! This isn't looking good").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Uh oh! This isn't looking good").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             lossTotal ++;
           }
         }
         else{
           if(outcome > .2){
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             winTotal ++;
           }
           else{
-            // $(".oddsMessage").empty();
-            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(1000).fadeOut(500);
+            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
               $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
-            }, 2000);
+            }, 3000);
             lossTotal ++;
           }
         }
@@ -199,44 +201,63 @@ $(document).ready(function(){
       if(lossTotal === 0){
         $(".score").empty();
         $(".score").append("<h1 id='final'>UNDEFEATED! PokeMASTER!</h1>");
-        console.log("losses" + lossTotal);
-        console.log("wins" + winTotal);
+        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").css("background-image", "url('master.jpg')");
+        $(".score").css("height", "100vh");
       }
       else if (lossTotal < winTotal) {
         $(".score").empty();
         $(".score").append("<h1 id='final'>You made it! Not bad!</h1>");
-        console.log("losses" + lossTotal);
-        console.log("wins" + winTotal);
+        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").css("background-image", "url('trainon.jpg')");
+        $(".score").css("height", "100vh");
       }
       else if (lossTotal === winTotal) {
         $(".score").empty();
-        $(".score").append("<h1 id='final'>So Close! Try again!</h1>");
-        console.log("losses" + lossTotal);
-        console.log("wins" + winTotal);
+        $(".score").append("<h1 id='final'>Not your best. Try again!</h1>");
+        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").css("background-image", "url('trainon.jpg')");
+        $(".score").css("background-size", "contain");
+        $(".score").css("background-repeat", "no-repeat");
+        $(".score").css("background-position", "center");
+        $(".score").css("height", "100vh");
       }
       else {
         $(".score").empty();
         $(".score").append("<h1 id='final'>Ehh. Professor Oak wants a word...</h1>");
-        console.log("losses" + lossTotal);
-        console.log("wins" + winTotal);
+        $(".score").append("<h2 class='counter blink_me'> WINS: " + winTotal + "   LOSSES: " + lossTotal + "</h2>");
+        $(".score").css("background-image", "url('oak.jpg')");
+        $(".score").css("background-size", "contain");
+        $(".score").css("background-repeat", "no-repeat");
+        $(".score").css("background-position", "center");
+        $(".score").css("height", "100vh");
       }
     }
   }
   $("#selectDestination").on("click", function(event){
     desitnationAddress = desitnationAddress + $('.address').val() + "&key=AIzaSyAXu3WBe8npGIQd2KleoYLNp-hmwWqgzBQ";
     desitnationAddress = desitnationAddress.replace(/ /g,"+");
+    rivalFrequency = parseFloat($("#rivalFrequency").val());
     $.get(desitnationAddress, function(addressData){
       destinationLat = addressData.results[0].geometry.location.lat;
       destinationLon = addressData.results[0].geometry.location.lng;
+      // addressConfirmed = confirm("You're " + $("#rivalFrequency").innerHTML + " to " + addressData.results[0].formatted_address +". Is that correct?")
     })
-    $(".pregame").empty();
-    $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
-      '<input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">'+
-      '<input type="submit" value="I Choose You!" id="submission"></form>');
-    $(".displayPokemon").css("height", "90vh");
-    $(".displayPokemon").append("<img src='pointing.jpg' height=50%/>");
-    $(".displayPokemon").append("<h1>Choose your Pokemon up here!</h1>")
-
+    // }).done(function(){
+      // if (addressConfirmed === true){
+        // console.log("confirming!");
+      $(".pregame").empty();
+      $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
+        '<input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">'+
+        '<input type="submit" value="I Choose You!" id="submission"></form>');
+      $(".displayPokemon").css("height", "90vh");
+      $(".displayPokemon").append("<img src='pointing.jpg' height=50%/>");
+      $(".displayPokemon").append("<h1>Choose your Pokemon by their PokeDex number up here! <br>You can change your mind before you start!</h1>")
+      // }
+    //   else{
+    //     desitnationAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    //   }
+    // })
   $("#selection").on("submit", function(event){
     event.preventDefault();
     userStrengths = [];

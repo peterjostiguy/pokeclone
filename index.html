@@ -21,7 +21,7 @@
               </h2>
             </div>
           </div>
-          <div class = "row">
+          <div class="row">
             <div class="guide col-md-6 col-xs-8">
               <h3>HOW TO PLAY</h3>
               <p>
@@ -29,12 +29,23 @@
               </p>
             </div>
           </div>
-          <div class="col-xs-12">
-            <form class="destinationEntry" action="" method="post">
-              <textarea class="address" rows="3" placeholder="Enter Address Here"></textarea>
-            </form>
+          <div class="row">
+            <div class="form col-md-6 col-xs-8">
+              <form class="destinationEntry" action="" method="post">
+                <textarea class="address" rows="3" placeholder="Enter Address Here"></textarea>
+              </form>
+            </div>
           </div>
-          <button type="button" name="button" id="selectDestination">Select!</button>
+          <div class="row">
+            <div class="form col-md-6 col-xs-8">
+              <label for="rivalFrequency">How are you getting there?</label>
+              <select name="transportation" id="rivalFrequency">
+                <option value="0.00073">Walking</option>
+                <option value="0.00365">Driving</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" name="button" id="selectDestination">Begin!</button>
         </div>
       </div>
       <div class="row gameplay">

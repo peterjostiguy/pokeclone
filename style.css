@@ -39,7 +39,7 @@ form {
   margin-right: 10vw;
 }
 
-#start {
+#start, #final {
   color: black
 }
 
@@ -56,12 +56,12 @@ form {
   height: 100vh;
 }
 
-.intro, .guide {
+.intro, .guide, .form {
   background-color: hsla(360, 0%, 0%, 0.4);
 }
 
 .guide {
-  margin-bottom: 10vh;
+  padding-bottom: 5vh;
 }
 
 .address {
@@ -77,4 +77,21 @@ form {
 
 .oddsMessage {
   margin-top: 15vh;
+}
+
+#rivalFrequency {
+  font-family: sans-serif;
+  text-shadow: none;
+}
+
+.score {
+  text-align: center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+}
+#final {
+  font-size: 8vh;
+  text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+  margin-bottom: 65vh;
 }
