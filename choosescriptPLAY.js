@@ -48,6 +48,7 @@ $(document).ready(function(){
   var rivalStrengths = [];
   var battleOdds = 1;
   var winTotal = 0;
+  var lossTotal = 0;
   var startingLat;
   var startingLon;
   var currentLat;
@@ -94,7 +95,6 @@ $(document).ready(function(){
   function showPosition(position) {
     currentLat = position.coords.latitude;
     currentLon = position.coords.longitude;
-    $(".rivalPokemon").css("background-image", "url('loading.gif')");
     distanceToDestination = Math.sqrt(Math.pow(currentLat-destinationLat, 2)+Math.pow(currentLon-destinationLon, 2));
     console.log(destinationLat);
     console.log(destinationLon);
@@ -104,6 +104,7 @@ $(document).ready(function(){
       battleCounter ++;
       battleOdds = 1;
       $(".rivalPokemon").empty();
+      $(".rivalPokemon").css("background-image", "url('loading.gif')");
       rivalPokemon = getRival(1, 721);
       var rivalPokemonURL = "https://pokeapi.co/api/v2/pokemon/" + rivalPokemon + "/";
       $.get(rivalPokemonURL, function(rivalData){
@@ -112,7 +113,6 @@ $(document).ready(function(){
         rivalTypeURL = rivalData.types[rivalData.types.length-1].type.url;
         $(".rivalPokemon").append("<h1>"+rivalPokemon+"</h1>");
         $(".rivalPokemon").append("<h2>"+rivalPokemonType.toUpperCase()+"</h2>");
-      }).done(function(){
         for (type in images){
           if (type === rivalPokemonType){
             var rivalTypeImage = "url(" + images[type]+ ")";
@@ -122,57 +122,102 @@ $(document).ready(function(){
       }).done(function(){
         for(i=0;i<userWeaknesses.length;i++){
           if(userWeaknesses[i] === rivalPokemonType){
-            alert("Uh Oh! This isn't lookin' good... Click to see how the battle turns out!");
             battleOdds = 2;
           }
         }
         for(i=0;i<userStrengths.length;i++){
           if(userStrengths[i] === rivalPokemonType){
-            alert("Lookin Good! Click to see how the battle turns out!");
             battleOdds = 3;
           }
         }
       }).done(function(){
+        $(".rivalPokemon").append("<h1 class='oddsMessage'></h1>")
         var outcome = Math.random();
         if(battleOdds === 1){
-          alert("Fair Match! Let's see how you do!");
           if(outcome > .5){
-            alert("You win!");
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
             winTotal ++;
           }
           else{
-            alert("What an idiot. Start Over");
-            winTotal = 0;
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Fair match! Let's see how you do!").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("Bah! You lost! Nice effort!").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
+            lossTotal ++;
           }
         }
         else if(battleOdds === 2){
           if(outcome > .8){
-            alert("You win!");
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Uh oh! This isn't looking good...").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
             winTotal ++;
           }
           else{
-            alert("What an idiot. Start Over");
-            winTotal = 0;
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Uh oh! This isn't looking good").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
+            lossTotal ++;
           }
         }
         else{
           if(outcome > .2){
-            alert("You win!");
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
             winTotal ++;
           }
           else{
-            alert("What an idiot. Start Over");
-            winTotal = 0;
+            // $(".oddsMessage").empty();
+            $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(1000).fadeOut(500);
+            setTimeout(function() {
+              $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
+            }, 2000);
+            lossTotal ++;
           }
         }
         $(".winTotal").empty();
-        $(".winTotal").append("WINS: " + winTotal);
-        // once you figure the order shit out(it shows, but needs to let the rival type show first), this will be a good placeholder.
-        // $(".rivalPokemon").css("background-image", "url('loading.gif')");
+        $(".winTotal").append("WINS: " + winTotal + "    LOSSES: " + lossTotal);
+
       })
     }
     else if (distanceToDestination <= 0.0005) {
-      alert("You made it! PokeMaster!")
+      $(".gameplay").empty();
+      if(lossTotal === 0){
+        $(".score").empty();
+        $(".score").append("<h1 id='final'>UNDEFEATED! PokeMASTER!</h1>");
+        console.log("losses" + lossTotal);
+        console.log("wins" + winTotal);
+      }
+      else if (lossTotal < winTotal) {
+        $(".score").empty();
+        $(".score").append("<h1 id='final'>You made it! Not bad!</h1>");
+        console.log("losses" + lossTotal);
+        console.log("wins" + winTotal);
+      }
+      else if (lossTotal === winTotal) {
+        $(".score").empty();
+        $(".score").append("<h1 id='final'>So Close! Try again!</h1>");
+        console.log("losses" + lossTotal);
+        console.log("wins" + winTotal);
+      }
+      else {
+        $(".score").empty();
+        $(".score").append("<h1 id='final'>Ehh. Professor Oak wants a word...</h1>");
+        console.log("losses" + lossTotal);
+        console.log("wins" + winTotal);
+      }
     }
   }
   $("#selectDestination").on("click", function(event){
@@ -186,12 +231,16 @@ $(document).ready(function(){
     $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
       '<input type="number" min="1" max="721" placeholder="Enter Pokemon Number" id="textSelection">'+
       '<input type="submit" value="I Choose You!" id="submission"></form>');
+    $(".displayPokemon").css("height", "90vh");
+    $(".displayPokemon").append("<img src='pointing.jpg' height=50%/>");
+    $(".displayPokemon").append("<h1>Choose your Pokemon up here!</h1>")
 
   $("#selection").on("submit", function(event){
     event.preventDefault();
+    userStrengths = [];
+    userWeaknesses = [];
     $(".landingPage").css("background-image", "none");
     $(".landingPage").css("height", "auto");
-    $(".displayPokemon").css("height", "90vh")
     $(".rivalPokemon").css("height", "90vh")
     $(".counter").css("height", "auto")
     $(".displayPokemon").empty();
@@ -240,10 +289,11 @@ $(document).ready(function(){
     })
     $("#start").on("click", function(event){
       $(".pregame").empty();
-      $(".rivalPokemon").css("background-image", "url('loading.gif')");
+      $(".rivalPokemon").empty();
+      $(".rivalPokemon").append("<h1 class='begin'>Head to your destination now!</h1>" + "<h2 class='begin'>It's dangerous out there. Look out for wild Pokemon!</h2>")
       setLocation();
       newLocation();
-  })
+    })
   })
   })
 })
