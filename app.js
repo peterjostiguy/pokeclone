@@ -1,6 +1,6 @@
 $(document).ready(function(){
   if(window.innerHeight > window.innerWidth){
-    alert("PokeClone is best enjoyed in Landscape!");
+    alert("JokeMon is best enjoyed in Landscape!");
 }
   var desitnationAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=";
   var destinationLat = 0;
@@ -29,7 +29,7 @@ $(document).ready(function(){
   var addressConfirmed = false;
   var images = {
     normal: "https://upload.wikimedia.org/wikipedia/commons/1/16/Appearance_of_sky_for_weather_forecast,_Dhaka,_Bangladesh.JPG",
-    fighting: "https://img0.etsystatic.com/003/0/5307718/il_fullxfull.360453384_aciz.jpg" ,
+    fighting: "http://s3.amazonaws.com/estock/fspid10/20/79/53/2/vegas-weekend-gambling-2079532-o.jpg" ,
     flying: "http://4.bp.blogspot.com/-3c9fw_g0kXw/Tut4h-ILMcI/AAAAAAAAGzI/oRH91Ttm7nE/s1600/20123_FlyingBirds.jpg" ,
     poison: "http://blog.gogo-vacations.com/wp-content/uploads/2015/04/Slime.jpg",
     ground: "http://bgfons.com/upload/ground_texture886.jpg" ,
