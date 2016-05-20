@@ -1,33 +1,3 @@
-
-// $(document).ready(function(){
-//   var userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
-//   userPokemon = parseFloat(userPokemon);
-//   var pokemonConfirmed;
-//   var
-//   do {
-//     if (userPokemon > 0 && userPokemon < 722){
-//       var chosenURL = "http://pokeapi.co/api/v2/pokemon/" + userPokemon + "/";
-//       $.get(chosenURL, function(userData){
-//         userObject = userData;
-//       }).done(function(){
-//        pokemonConfirmed = confirm("You chose " + userObject.name +". Is that correct?");
-//         if (pokemonConfirmed === false){
-//           userPokemon = prompt("Choose your pokemon by it's PokeDex Number!");
-//           console.log("keep trying!")
-//         }
-//       })
-//     }
-//     else {
-//       userPokemon = prompt("Oops! Make sure you're entering a pokemon by it's number (1-721)");
-//       pokemonChosen = false;
-//       console.log("try again!")
-//     }
-//   } while(pokemonConfirmed === false);
-//   console.log("this should work!")
-// })
-
-
-
 $(document).ready(function(){
   if(window.innerHeight > window.innerWidth){
     alert("PokeClone is best enjoyed in Landscape!");
@@ -162,14 +132,14 @@ $(document).ready(function(){
           if(outcome > .8){
             $(".oddsMessage").text("Uh oh! This isn't looking good...").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
-              $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
+              $(".oddsMessage").text("You did it! Awesome!").fadeIn(500).delay(2000).fadeIn(500);
             }, 3000);
             winTotal ++;
           }
           else{
             $(".oddsMessage").text("Uh oh! This isn't looking good").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
-              $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
+              $(".oddsMessage").text("Bad luck! You never stood a chance.").fadeIn(500).delay(2000).fadeIn(500);
             }, 3000);
             lossTotal ++;
           }
@@ -178,14 +148,14 @@ $(document).ready(function(){
           if(outcome > .2){
             $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
-              $(".oddsMessage").text("You win!").fadeIn(500).delay(2000).fadeIn(500);
+              $(".oddsMessage").text("You win! Nice Work!").fadeIn(500).delay(2000).fadeIn(500);
             }, 3000);
             winTotal ++;
           }
           else{
             $(".oddsMessage").text("Looking good! Fingers crossed!").fadeIn(500).delay(2000).fadeOut(500);
             setTimeout(function() {
-              $(".oddsMessage").text("Bah! You lost! Nice effort").fadeIn(500).delay(2000).fadeIn(500);
+              $(".oddsMessage").text("Aww you lost! Keep practicing.").fadeIn(500).delay(2000).fadeIn(500);
             }, 3000);
             lossTotal ++;
           }
@@ -243,11 +213,7 @@ $(document).ready(function(){
     $.get(desitnationAddress, function(addressData){
       destinationLat = addressData.results[0].geometry.location.lat;
       destinationLon = addressData.results[0].geometry.location.lng;
-      // addressConfirmed = confirm("You're " + $("#rivalFrequency").innerHTML + " to " + addressData.results[0].formatted_address +". Is that correct?")
     })
-    // }).done(function(){
-      // if (addressConfirmed === true){
-        // console.log("confirming!");
       $(".pregame").empty();
       $(".container-fluid").css("background-image", "none");
       $(".pregame").append('<form class="choosePokemon" action="" method="post" id="selection">'+
@@ -256,11 +222,6 @@ $(document).ready(function(){
       $(".displayPokemon").css("height", "90vh");
       $(".displayPokemon").append("<img src='pointing.jpg' height=50%/>");
       $(".displayPokemon").append("<h1>Choose your Pokemon by their PokeDex number up here! <br>You can change your mind before you start!</h1>")
-      // }
-    //   else{
-    //     desitnationAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    //   }
-    // })
   $("#selection").on("submit", function(event){
     event.preventDefault();
     userStrengths = [];

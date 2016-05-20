@@ -57,7 +57,7 @@ form {
 }
 
 .intro, .guide, .form, .destinationButton, .blink_me, #final {
-  background-color: hsla(360, 0%, 0%, 0.4);
+  background-color: hsla(360, 0%, 0%, 0.6);
 }
 
 .destinationButton {
